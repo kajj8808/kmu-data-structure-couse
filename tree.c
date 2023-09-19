@@ -49,7 +49,7 @@ struct TreeNode *pop(struct Stack *stack)
     struct StackNode *temp = stack->top;
     stack->top = stack->top->next;
     struct TreeNode *popped = temp->data;
-    free(temp); // 임시로 만들어놓은 temp을 메모리에서 활당을 풀어줍니다.
+    free(temp); 
     return popped;
 }
 
@@ -58,26 +58,29 @@ void preorderTraversal(struct TreeNode *root)
 {
     if (root == NULL)
     {
-        return;
+        return; // 빈 트리 노드의 경우 종료합니다.
     }
-    // 1. root 를 stack에 넣습니다.
+    // 스택생성
     struct Stack *stack = createStack();
+    // 루트 노드를 스택에 추가
     push(stack, root);
-    // 2. 전위 순서대로 l , r , v 를 구현하기 위해서 r , l 순서로 넣어줍니다.
+    // 스택이 비어있지 않은 동안 반복합니다.
     while (stack->top != NULL)
     {
+        // 스택에서 노드를 가져옵니다.
         struct TreeNode *current = pop(stack);
+        // 노드의 데이터를 출력합니다. ( 전위 )
         printf("%d ", current->data);
         if (current->right != NULL)
         {
-            push(stack, current->right);
+            push(stack, current->right); // 오른쪽 노드를 스택에 추가
         }
         if (current->left != NULL)
         {
-            push(stack, current->left);
+            push(stack, current->left); // 왼쪽 노드를 스택에 추가
         }
     }
-    free(stack);
+    free(stack); // 스택 메모리 해제
 }
 
 // 중위 순회
@@ -85,21 +88,29 @@ void inorderTraversal(struct TreeNode *root)
 {
     if (root == NULL)
     {
-        return;
+        return; // 빈트리의 경우에 종료
     }
-    struct Stack *stack = createStack();
+    // 스택 생성
+    struct Stack *stack = createStack(); 
     struct TreeNode *current = root;
-    while (current != NULL || stack->top != NULL)
+    // 스택이 비어있지 않는 동안 돕니다.
+    while (current != NULL || stack->top != NULL) 
     {
         while (current != NULL)
         {
-            push(stack, current);
+            // 현재 노드를 스택에 추가합니다.
+            push(stack, current); 
+            // 왼쪽 노드로 이동합니다.
             current = current->left;
         }
+        // 스택에서 노드를 가져옵니다.
         current = pop(stack);
+        // 노드의 데이터를 출력합니다. (중위)
         printf("%d ", current->data);
+        // 오른쪽 노드로 이동합니다.
         current = current->right;
     }
+    // 스택메모리를 해제합니다.
     free(stack);
 }
 
@@ -113,26 +124,31 @@ void postorderTraversal(struct TreeNode *root)
     // 후위의 경우 스택을 두개를 사용해 구현합니다.
     struct Stack *stack1 = createStack();
     struct Stack *stack2 = createStack();
+    // 루트 노드를 첫번째 스택에 추가합니다.
     push(stack1, root);
     while (stack1->top != NULL)
     {
+        // 스택 에서 노드를 가져옵니다.
         struct TreeNode *current = pop(stack1);
+        // 두번쨰 스택에 노드를 추가합니다 ( 역순 저장 )
         push(stack2, current);
         if (current->left != NULL)
         {
+            // 왼쪽 노드를 첫 번쨰 스택에 추가합니다.
             push(stack1, current->left);
         }
         if (current->right != NULL)
         {
+            // 오른쪽 노드를 첫 번째 스택에 추가합니다.
             push(stack1, current->right);
         }
     }
     while (stack2->top != NULL)
     {
-        struct TreeNode *current = pop(stack2);
-        printf("%d ", current->data);
+        struct TreeNode *current = pop(stack2); // 두 번째 스택에서 노드를 꺼내옵니다.
+        printf("%d ", current->data); // 노드의 데이터를 출력합니다. ( 후위 순회 )
     }
-    // 사용한 스택은 메모리에서 할당을 해제합니다.
+    // 스택 메모리 해제
     free(stack1);
     free(stack2);
 }
