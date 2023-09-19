@@ -1,3 +1,5 @@
-# 자료구조(2) Repasitory
+# Tree (ExpressionTree)
 
-계명대학교 자료구조(2)에 대한 git 저장소 입니다.
+![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/7f6e832e-6035-4a16-9e40-c79edf09e279)
+
+
