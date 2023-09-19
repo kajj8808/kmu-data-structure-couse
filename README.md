@@ -1,5 +1,5 @@
 # Tree (ExpressionTree)
 
-![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/7f6e832e-6035-4a16-9e40-c79edf09e279)
+![](ttps://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/fc9c5b36-9d53-4e63-b2ba-245b482e3310)
 
 
