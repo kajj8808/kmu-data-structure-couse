@@ -1,3 +1,3 @@
-# 자료구조(2) Repasitory
+# Tree (threadBinaryTree)
 
-계명대학교 자료구조(2)에 대한 git 저장소 입니다.
+
