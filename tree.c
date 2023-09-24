@@ -5,19 +5,20 @@ typedef struct TreeNode
 {
     int data;
     struct TreeNode *left, *right;
-    int is_thread; // 만약 오른쪽 링크가 스레드이면 TRUE
+    int is_thread; // 만약 오른쪽 링크가 스레드이면 1 아니면 0
 } TreeNode;
 
-TreeNode *find_successor(TreeNode *p) // 다음을 찾는 루틴
+// 다음을 찾는 함수이빈다.
+TreeNode *findSuccessor(TreeNode *p)
 {
-    // q는 p의 오른쪽 포인터
+
     TreeNode *q = p->right;
-    // 만약 오른쪽 포인터가 NULL이거나 스레드이면 오른쪽 포인터를 반환
+    // 만약 오른쪽 포인터가 NULL이거나 스레드이면 오른쪽 포인터를 반환합니다.
+    // NULL 일 경우는 마지막 노드일 경우입니다. 이진이 불가능 한 상태입니다.
     if (q == NULL || p->is_thread == 1)
-        // q == NULL // 오른쪽 마지막 노드일떄 스레드 이진이 불가능하기에..
         return q;
 
-    // 만약 오른쪽 자식이면 다시 가장 왼쪽 노드로 이동
+    // 만약 오른쪽 자식이면 다시 가장 왼쪽 노드로 이동합니다.
     while (q->left != NULL)
     {
         q = q->left;
@@ -26,17 +27,44 @@ TreeNode *find_successor(TreeNode *p) // 다음을 찾는 루틴
     return q;
 }
 
-void thread_inorder(TreeNode *t) // 찾아가는 함수
+// 중위순회 함수입니다.
+void threadInorder(TreeNode *t)
 {
     TreeNode *q;
     q = t;
+    // 중위 를 하기위해 가장 왼쪽 노드를 갑니다.
     while (q->left)
-        q = q->left; // 가장 왼쪽 노드로 간다.
+        q = q->left;
     do
     {
-        printf("%d ", q->data); // 데이터 출력 여긴 방문, 이후 다음을 찾는 것.
-        q = find_successor(q);  // 후속자 함수 호출
-    } while (q);                // NULL이 아니면 NULL일떄는 E인 경우 뿐임.
+        // 현재 위치 의 값을 출력합니다.
+        printf("%d ", q->data);
+        // 노드의 위치를 옮깁니다.
+        q = findSuccessor(q);
+    } while (q); // 마지막 노드까지 돕니다.
+}
+
+TreeNode *parent(TreeNode *child)
+{
+
+    TreeNode *parentNode;
+    // 오른쪽 노드가 없는경우 child를 return 합니다.
+    if (!child->right)
+        return child;
+
+    // thread 으로 연결되어 있는 상태일 때
+    if (child->is_thread == 1)
+    {
+        // 스레드로 연결되어 있기 때문에 오른쪽 노드로 가면 부모 노드기에 parentNode에 오른쪽 노드를 넣어줍니다.
+        parentNode = child->right;
+        // 만약 부모노드에서 왼쪽의 노드가 목표 노드 가 아니라면 한칸 위의 노드를 가르키고 있는거기 때문에 부모노드를 한번더 왼쪽으로 옮겨줍니다.
+        if (parentNode->left != child)
+        {
+            parentNode = parentNode->left;
+        }
+    }
+
+    return parentNode;
 }
 
 int main()
@@ -112,7 +140,7 @@ int main()
     n4->right = n3;
 
     n5->is_thread = 1;
-    n5->right = n6;
+    n5->right = n2;
 
     n10->is_thread = 1;
     n10->right = n9;
@@ -124,6 +152,16 @@ int main()
     n8->right = n7;
 
     struct TreeNode *root = n1;
-    thread_inorder(root);
+    // 중위 순회 결과.
+    printf("1. 중위 순회 결과\n");
+    threadInorder(root);
+    printf("\n\n");
+    // 특정 노드의 부모노드를 찾아서 반환하는 parent 함수 구현
+    TreeNode *parentNode_n4 = parent(n4);
+    printf("2. Node 4의 부모: %d\n", parentNode_n4->data);
+    TreeNode *parentNode_n5 = parent(n5);
+    printf("3. Node 5의 부모: %d\n", parentNode_n5->data);
+    TreeNode *parentNode_n6 = parent(n6);
+    printf("4. Node 5의 부모: %d\n", parentNode_n6->data);
     return 0;
 }
