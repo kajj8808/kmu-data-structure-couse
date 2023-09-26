@@ -1,167 +1,209 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct TreeNode
+int nodeCount = 0;
+
+typedef struct
 {
-    int data;
+    int key;
     struct TreeNode *left, *right;
-    int is_thread; // 만약 오른쪽 링크가 스레드이면 1 아니면 0
 } TreeNode;
 
-// 다음을 찾는 함수이빈다.
-TreeNode *findSuccessor(TreeNode *p)
+TreeNode *new_node(int item)
+{
+    TreeNode *temp = (TreeNode *)malloc(sizeof(TreeNode));
+    temp->key = item;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// 중위
+void inorder(TreeNode *root)
 {
 
-    TreeNode *q = p->right;
-    // 만약 오른쪽 포인터가 NULL이거나 스레드이면 오른쪽 포인터를 반환합니다.
-    // NULL 일 경우는 마지막 노드일 경우입니다. 이진이 불가능 한 상태입니다.
-    if (q == NULL || p->is_thread == 1)
-        return q;
-
-    // 만약 오른쪽 자식이면 다시 가장 왼쪽 노드로 이동합니다.
-    while (q->left != NULL)
+    // root node 가 존재할 때 + ( node 가 null 이 아닐때 즉 node 가 존재할 경우)
+    if (root)
     {
-        q = q->left;
+        nodeCount++;
+        // 중위 이기에 L V R 순서로 실행( 출력 )합니다.
+        inorder(root->left);
+        printf("%d ", root->key);
+        inorder(root->right);
     }
-
-    return q;
 }
 
-// 중위순회 함수입니다.
-void threadInorder(TreeNode *t)
+TreeNode *insert_node(TreeNode *node, int key)
 {
-    TreeNode *q;
-    q = t;
-    // 중위 를 하기위해 가장 왼쪽 노드를 갑니다.
-    while (q->left)
-        q = q->left;
-    do
-    {
-        // 현재 위치 의 값을 출력합니다.
-        printf("%d ", q->data);
-        // 노드의 위치를 옮깁니다.
-        q = findSuccessor(q);
-    } while (q); // 마지막 노드까지 돕니다.
+    nodeCount++;
+    // 트리가 공백이면 새로운 노드를 반환한다.
+    if (node == NULL)
+        return new_node(key);
+
+    // 그렇지 않으면 순환적으로 트리를 내려간다.
+    if (key < node->key)
+        node->left = insert_node(node->left, key);
+    else if (key > node->key)
+        node->right = insert_node(node->right, key);
+
+    // 변경된 루트 포인터를 반환한다.
+    return node;
 }
 
-TreeNode *parent(TreeNode *child)
+TreeNode *insert_node_I(TreeNode *node, int key)
 {
 
-    TreeNode *parentNode;
-    // 오른쪽 노드가 없는경우 child를 return 합니다.
-    if (!child->right)
-        return child;
-
-    // thread 으로 연결되어 있는 상태일 때
-    if (child->is_thread == 1)
+    while (1)
     {
-        // 스레드로 연결되어 있기 때문에 오른쪽 노드로 가면 부모 노드기에 parentNode에 오른쪽 노드를 넣어줍니다.
-        parentNode = child->right;
-        // 만약 부모노드에서 왼쪽의 노드가 목표 노드 가 아니라면 한칸 위의 노드를 가르키고 있는거기 때문에 부모노드를 한번더 왼쪽으로 옮겨줍니다.
-        if (parentNode->left != child)
+        nodeCount++;
+        if (key < node->key)
         {
-            parentNode = parentNode->left;
+            node = node->left;
         }
-    }
+        else if (key > node->key)
+        {
 
-    return parentNode;
+            node = node->right;
+        }
+
+        // 트리가 공백이면 새로운 노드를 반환한다.
+        if (node == NULL)
+            return new_node(key);
+    }
+}
+
+// 반복적인 탐색 함수
+TreeNode *search(TreeNode *node, int key)
+{
+    while (node != NULL)
+    {
+        nodeCount++;
+        if (key == node->key)
+            return node;
+        else if (key < node->key)
+            node = node->left;
+        else
+            node = node->right;
+    }
+    return NULL; // 탐색에 실패했을 경우 NULL 반환
+}
+
+TreeNode *min_value_node(TreeNode *node)
+{
+    TreeNode *current = node;
+
+    // 맨 왼쪽 단말 노드를 찾으러 내려감
+    while (current->left != NULL)
+        current = current->left;
+
+    return current;
+}
+
+TreeNode *delete_node(TreeNode *root, int key)
+{
+    nodeCount++;
+    if (root == NULL)
+        return root;
+
+    // 만약 키가 루트보다 작으면 왼쪽 서브 트리에 있는 것임
+    if (key < root->key)
+        root->left = delete_node(root->left, key);
+    // 만약 키가 루트보다 크면 오른쪽 서브 트리에 있는 것임
+    else if (key > root->key)
+        root->right = delete_node(root->right, key);
+    // 키가 루트와 같으면 이 노드를 삭제하면 됨
+    else
+    { // 삭제할 노드를 찾았을 경우
+        if (root->left == NULL)
+        {
+            TreeNode *temp = root->right;
+            free(root);
+            return temp; // 위에 값에 대체 되도록? 자식 2개를 찾는 코드
+        }
+        else if (root->right == NULL)
+        {
+            TreeNode *temp = root->left;
+            free(root);
+            return temp;
+        }
+        // 자식이 2개의 경우 적자를 찾아줘야 함.
+        TreeNode *temp = min_value_node(root->right); // 오른쪽으로 한번 가고 제일 왼쪽으로.
+
+        root->key = temp->key; // 이때 root 는 삭제 할 노드 라고 보면 될듯.
+        // 노드를 삭제하고 대치했기 떄문에 오른쪽 값을 찾고 연결시켜줌.
+        root->right = delete_node(root->right, temp->key);
+    }
+    return root;
 }
 
 int main()
 {
-    /// Linked Tree
-    struct TreeNode *n4 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n4->data = 4;
-    n4->left = NULL;
-    n4->right = NULL;
-    n4->is_thread = 0;
+    TreeNode *root = insert_node(NULL, 60);
+    root = insert_node(root, 41);
+    root = insert_node(root, 74);
+    root = insert_node(root, 16);
+    root = insert_node(root, 53);
+    root = insert_node(root, 65);
+    root = insert_node(root, 25);
+    root = insert_node(root, 46);
+    root = insert_node(root, 55);
+    root = insert_node(root, 63);
+    root = insert_node(root, 70);
+    root = insert_node(root, 42);
+    root = insert_node(root, 62);
+    root = insert_node(root, 64);
+    nodeCount = 0; // count 초기화
+    // s
+    TreeNode *result = search(root, 25);
+    printf("검색 성공: %d\n", result->key);
+    printf("방문한 노드의 수: %d\n", nodeCount);
+    inorder(root); // 중위 순회
+    nodeCount = 0; // count 초기화
+    printf("\n");
+    printf("\n");
+    // i
+    insert_node(root, 88);
+    printf("방문한 노드의 수: %d\n", nodeCount);
+    inorder(root); // 중위 순회
+    nodeCount = 0; // count 초기화
+    printf("\n");
+    printf("\n");
 
-    struct TreeNode *n5 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n5->data = 5;
-    n5->left = NULL;
-    n5->right = NULL;
-    n5->is_thread = 0;
+    // d
+    delete_node(root, 63);
+    printf("방문한 노드의 수: %d\n", nodeCount);
+    inorder(root); // 중위 순회
+    nodeCount = 0; // count 초기화
+    printf("\n");
+    printf("\n");
 
-    struct TreeNode *n10 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n10->data = 10;
-    n10->left = NULL;
-    n10->right = NULL;
-    n10->is_thread = 0;
+    // t
+    inorder(root); // 중위 순회
+    printf("\n");
+    printf("방문한 노드의 수: %d\n", nodeCount);
+    nodeCount = 0; // count 초기화
+    printf("\n");
 
-    struct TreeNode *n11 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n11->data = 11;
-    n11->left = NULL;
-    n11->right = NULL;
-    n11->is_thread = 0;
+    // I
+    insert_node_I(root, 43);
+    printf("방문한 노드의 수: %d\n", nodeCount);
+    inorder(root); // 중위 순회
+    nodeCount = 0; // count 초기화
+    printf("\n");
+    printf("\n");
+    // D
 
-    struct TreeNode *n3 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n3->data = 3;
-    n3->left = n4;
-    n3->right = n5;
-    n3->is_thread = 0;
-
-    struct TreeNode *n6 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n6->data = 6;
-    n6->left = NULL;
-    n6->right = NULL;
-    n6->is_thread = 0;
-
-    struct TreeNode *n8 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n8->data = 8;
-    n8->left = NULL;
-    n8->right = NULL;
-    n8->is_thread = 0;
-
-    struct TreeNode *n9 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n9->data = 9;
-    n9->left = n10;
-    n9->right = n11;
-    n9->is_thread = 0;
-
-    struct TreeNode *n2 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n2->data = 2;
-    n2->left = n3;
-    n2->right = n6;
-    n2->is_thread = 0;
-
-    struct TreeNode *n7 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n7->data = 7;
-    n7->left = n8;
-    n7->right = n9;
-    n7->is_thread = 0;
-
-    struct TreeNode *n1 = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    n1->data = 1;
-    n1->left = n2;
-    n1->right = n7;
-    n1->is_thread = 0;
-
-    n4->is_thread = 1;
-    n4->right = n3;
-
-    n5->is_thread = 1;
-    n5->right = n2;
-
-    n10->is_thread = 1;
-    n10->right = n9;
-
-    n6->is_thread = 1;
-    n6->right = n1;
-
-    n8->is_thread = 1;
-    n8->right = n7;
-
-    struct TreeNode *root = n1;
-    // 중위 순회 결과.
-    printf("1. 중위 순회 결과\n");
-    threadInorder(root);
-    printf("\n\n");
-    // 특정 노드의 부모노드를 찾아서 반환하는 parent 함수 구현
-    TreeNode *parentNode_n4 = parent(n4);
-    printf("2. Node 4의 부모: %d\n", parentNode_n4->data);
-    TreeNode *parentNode_n5 = parent(n5);
-    printf("3. Node 5의 부모: %d\n", parentNode_n5->data);
-    TreeNode *parentNode_n6 = parent(n6);
-    printf("4. Node 5의 부모: %d\n", parentNode_n6->data);
+    printf("---------------------------------\n");
+    printf("| s\t: 검색\t\t\t|\n");
+    printf("| i\t: 노드 추가\t\t|\n");
+    printf("| d\t: 노드 삭제\t\t|\n");
+    printf("| t\t: 중위 순회\t\t|\n");
+    printf("| I\t: 노드 추가(반복)\t|\n");
+    printf("| D\t: 노드 삭제(반복)\t|\n");
+    printf("| c\t: 종료\t\t\t|\n");
+    printf("---------------------------------\n");
+    char menu;
+    printf("메뉴 입력: ");
+    scanf(&menu);
+    printf("%c ", menu);
     return 0;
 }
