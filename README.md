@@ -1,3 +1,3 @@
-# 자료구조(2) Repasitory
+# Tree ( Linked & Array )
 
-계명대학교 자료구조(2)에 대한 git 저장소 입니다.
+![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/c41e6057-ea65-4514-9a3e-bbd98fb847fb)
