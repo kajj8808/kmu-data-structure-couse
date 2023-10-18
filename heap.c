@@ -14,6 +14,8 @@ void printHeapArray(HeapType *heap)
 {
     for (int i = 0; i <= heap->size; i++)
     {
+        if (heap->arr[i] == NULL)
+            continue;
         printf("%d ", heap->arr[i]);
     }
     printf("\n");
@@ -29,23 +31,25 @@ void swap(int *a, int *b)
 // 노드 추가 함수입니다
 void push(HeapType *heap, int val)
 {
+    // 노드가 이동한 횟수를 저장하기 위한 변수
     int moves = 0;
-    if (heap->size >= MAX_SIZE)
-    {
-        printf("heap이 가득 찼습니다.\n");
-        return;
-    }
 
+    // 힙의 마지막에 값을 추가
     heap->arr[heap->size] = val;
+    // 현재 노드의 위치를 마지막 위치로 설정
     int curr = heap->size;
+    // 힙의 현재 상태 출력
     printHeapArray(heap);
-    // insert할시 우선순위 heap의 경우 큰값을 가진 노드가 위에 위치함으로 부모노드를 찾아 그 값과 비교하며 올라가서 insert할 위치를 찾습니다.
+    // insert할시 우선순위 heap의 경우 큰값을 가진 노드가 위에 위치함으로 부모노드를 찾아 그 값과 비교하며 올라가서 insert할 위치찾음
     while (curr > 0 && heap->arr[curr] > heap->arr[(curr - 1) / 2])
     {
+        // 현재 노드와 부모 노드의 값을 교환
         swap(&heap->arr[curr], &heap->arr[(curr - 1) / 2]);
+        // 현재 힙출력
         printHeapArray(heap);
         moves++;
-        curr = (curr - 1) / 2; // 부모노드를 찾아줍니다.
+        // 현재 위치를 부모 노드의 위치로 업데이트
+        curr = (curr - 1) / 2;
     }
     heap->size++;
     printf("노드가 이동한 횟수: %d\n", moves);
@@ -54,54 +58,46 @@ void push(HeapType *heap, int val)
 // 삭제 메뉴 함수
 int pop(HeapType *heap)
 {
-    // 노드가 이동한 횟수 출력을 위해 사용
+    int parent, child;
+    int item, temp;
     int moves = 0;
 
-    // 마지막 노드를 루트 노드로 이동합니다. + 루트 노드를 삭제합니다.
-    heap->arr[0] = heap->arr[--heap->size];
-    // 루트 노드를 삭제했기 때문에 사이즈도 같이 줄여줍니다.
-    heap->size--;
-    // 루트의 위치를 현재 위치로 초기화합니다.
-    int curr = 0;
-    // 루트에서부터 단말 노드까지의 경로에 있는 노드들을 교환하여 히프 성질을 만족시킵니다.
-    while (1)
+    item = heap->arr[0];              // 루트의 값을 저장
+    temp = heap->arr[heap->size - 1]; // 마지막 값을 임시로 저장
+    heap->arr[heap->size - 1] = NULL; // 마지막 값을 초기화 (또는 0으로 설정)
+    heap->size--;                     // 힙의 크기를 감소
+
+    parent = 0;
+    child = 1; // 0-based index에서의 첫 번째 자식의 위치
+
+    while (child < heap->size)
     {
-        // 노드의 L R 을 가져옵니다.
-        // 2 * 0 + 1 => 1
-        int left = 2 * curr + 1;
-        // 2 * 0 + 2 => 2
-        int right = 2 * curr + 2;
-        // left가 heap.size 보다 커지면 종료합니다. -> 움직일 노드 없음
-        if (left >= heap->size)
-        {
-            break;
-        }
-        // 스왑할 노드의 인덱스를 찾습니다.
-        int j = left;
-
-        // 오른쪽 자식이 히프 크기 안에 있고, 오른쪽 값이 왼쪽 값보다 크다면 오른쪽 자식을 스왑 대상으로 변경합니다.
-        if (right < heap->size && heap->arr[right] > heap->arr[left])
-        {
-            j = right;
-        }
-
-        // 현재 노드의 값이 자식 노드값 보다 크다면 교환하지 않아도 됩니다.
-        if (heap->arr[curr] > heap->arr[j])
-        {
-            break;
-        }
-        // 히프의 현재 상태를 출력합니다.
-        printHeapArray(heap);
-        // 값을 스왑시켜 줍니다.
-        swap(&heap->arr[curr], &heap->arr[j]);
-
-        // 노드의 이동횟수를 증가시킵니다.
         moves++;
-        // 현재의 위치를 j으로 업데이트 시켜줍니다.
-        curr = j;
+        // 두 자식 중에서 큰 자식을 선택
+        if (child + 1 < heap->size && heap->arr[child] < heap->arr[child + 1])
+        {
+            child++;
+        }
+
+        if (temp >= heap->arr[child])
+        {
+            break; // 올바른 위치를 찾았을 경우
+        }
+
+        // 한 단계 아래로 이동
+        heap->arr[parent] = heap->arr[child];
+        parent = child;
+        child = 2 * parent + 1; // 0-based index에서의 다음 자식의 위치
+
+        // 중간 과정 출력
+        printHeapArray(heap);
     }
-    // 노드의 이동 횟수 출력.
+
+    heap->arr[parent] = temp;
+    printHeapArray(heap); // 마지막 상태 출력
+
     printf("노드가 이동된 횟수: %d\n", moves);
+    return item;
 }
 
 // 트리 레벨별 출력
