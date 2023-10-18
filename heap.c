@@ -103,16 +103,24 @@ int pop(HeapType *heap)
 // 트리 레벨별 출력
 void printHeap(HeapType *heap)
 {
+    // 현재에 레벨을 저장 하기위한 변수, 초기 레벨 0
     int level = 0;
+    // 다음 레벨로 넘아갈때 사용하는 변수 초기값은 0
     int nextLevel = 1;
+    // 첫 번째 라벨을 출력해줍니다.
     printf("[%d] ", level + 1);
+    // 힙을 모두돕니다.
     for (int i = 0; i < heap->size; i++)
     {
+        // 현재 원소 출력
         printf("%d ", heap->arr[i]);
+        // 현재 인덱스가 다음레벨의 인덱스와 같다면 레벨을 증가시켜줍니다.
         if (i == nextLevel - 1)
         {
             level++;
+            // 줄바꿈을 하고 레벨을 출력
             printf("\n[%d] ", level + 1);
+            // 다음레벨으로 넘어갑니다. 인덱스를 증가
             nextLevel += (1 << level);
         }
     }
