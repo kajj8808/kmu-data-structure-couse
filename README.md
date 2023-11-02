@@ -1,3 +1,3 @@
-# Tree (BinarySearchTree)
+# Graph (Kruskal)
 
-![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/e9eede06-3a24-4b71-a331-eaef07c438dd)
+![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/a624d964-f422-4eb3-a45f-258e0d5f4a41)
