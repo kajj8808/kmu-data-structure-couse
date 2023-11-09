@@ -1,3 +1,3 @@
-# Graph MST (Prim)
+# Graph MST (Dijkstra)
 
-![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/1a9cd8b0-7bf9-4887-947f-8d1c5a15c6d2)
+![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/151aa168-a362-4fa9-9c19-0695e05082d5)
