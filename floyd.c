@@ -76,7 +76,7 @@ void printPath(int startNode, int endNode)
         end = P[start][end] - 1;
     }
     // 경로를 출력합니다.
-    printf("Shortest Distance: ");
+    printf("Shortest Path: ");
     printf("(%d,", start + 1);
     // 도착지점에서 출력지점으로 값을 넣었으므로,
     // 역순으로 출력합니다  5 , 2 , 1 -> 1 , 2 , 5
