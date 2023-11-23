@@ -18,8 +18,9 @@ void printNums(int nums[20])
 
 void insertionSort(int list[], int first, int last, int gap)
 {
+    // insertionSort 를 진행합니다.
     int i, j, key;
-
+    // insertionSort 의 특성상 값 두개를 체크하고 변경합니다.
     for (i = first + gap; i <= last; i = i + gap)
     {
         key = list[i];
@@ -37,7 +38,7 @@ void shellSort(int list[20], int n)
 {
     int i, gap;
     // n의 경우 10으로 설정하였습니다 -> 초기 gap 10 / 2.
-    // gap을 변경시키며 값을 찾습니다.
+    // gap을 변경시키며 값을 찾습니다. 10 -> 5 -> 2 -> 1
     for (gap = n / 2; gap > 0; gap = gap / 2)
     {
         if ((gap % 2) == 0)
