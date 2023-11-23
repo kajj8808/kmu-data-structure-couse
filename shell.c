@@ -72,7 +72,7 @@ int main()
         printf("\n");
         // 정렬이 완료된 리스트를 출력합니다.
         printf("Shell Sort\n");
-        shellSort(ranNums, 10);
+        shellSort(ranNums, 20);
         printNums(ranNums);
     }
     // 20번 돌린 결과의 평균을 출력합니다.
