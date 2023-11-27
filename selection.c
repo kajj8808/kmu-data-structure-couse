@@ -61,9 +61,9 @@ int main()
         printf("\n");
         printf("Selection Sort\n");
         selectionSort(ranNums, 20);
-        // sort를 할때 움직인 횟수를 출력합니다.
-        printf("\nMove Count: %d\n", moveCount / 20); 
-        // 20번 반복한 평균 이동 횟수를 출력합니다.
-        printf("CompareCount Count: %d\n", compareCount / 20);
     }
+    // 값이 이동한 평균 횟수를 출력합니다.
+    printf("\nMove Count: %d\n", moveCount / 20); 
+    // 값을 비교한 평균횟수를 출력합니다.
+    printf("CompareCount Count: %d\n", compareCount / 20);
 }
