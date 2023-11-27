@@ -62,8 +62,8 @@ int main()
         printf("Bubble Sort\n");
         bubbleSort(ranNums, 20);
     }
-    // sort를 할때 움직인 평균 횟수를 출력합니다.
-    printf("\nMove Count: %d\n", moveCount / 20);
-    // 20번 돌때 값이 이동한 이동 횟수를 출력합니다.
+    // 값이 이동한 평균 횟수를 출력합니다.
+    printf("\nMove Count: %d\n", moveCount / 20); 
+    // 값을 비교한 평균횟수를 출력합니다.
     printf("CompareCount Count: %d\n", compareCount / 20);
 }
