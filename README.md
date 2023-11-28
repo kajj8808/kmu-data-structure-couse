@@ -1,3 +1,3 @@
-# Sorting Practice (Shell)
+# Sorting Practice (Merge)
 
-![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/80e02f90-7f30-429e-9949-b71f4d629bbe)
+![](https://github.com/kajj8808/kmu-data-structure-couse/assets/71279997/9e53f90e-d71c-44a1-ac79-ba8f944e8959)
