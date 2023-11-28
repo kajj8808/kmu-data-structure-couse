@@ -22,32 +22,38 @@ void printNums(int nums[20])
 void merge(int list[], int left, int mid, int right)
 {
     int i, j, k, l;
-    int isPrint = 0;
+
     i = left;
     j = mid + 1;
     k = left;
     // 분할 정렬된 list의 합병
     while (i <= mid && j <= right)
     {
-        moveCount++;
+        moveCount++;    // 움직인 횟수를 카운트 해줍니다.
+        compareCount++; // 두 집합이 값을 비교할때의 횟수를 카운트 해줍니다.
         if (list[i] <= list[j])
         {
             sorted[k++] = list[i++];
         }
         else
         {
-            compareCount++;
-            isPrint = 1; // 변화가 있을때만 출력하기 위해 사용합니다.
             sorted[k++] = list[j++];
         }
     }
     if (i > mid) // 남아 있는 레코드의 일괄 복사
         for (l = j; l <= right; l++)
+        {
             sorted[k++] = list[l];
+            moveCount++; // 남아 있는 값을 복사할때도 카운트해줍니다.
+        }
 
     else // 남아 있는 레코드의 일괄 복사
         for (l = i; l <= mid; l++)
+        {
             sorted[k++] = list[l];
+            moveCount++; // 남아 있는 값을 복사할때도 카운트해줍니다.
+        }
+
     // 배열 sorted[]의 리스트를 배열 list[]로 복사
     for (l = left; l <= right; l++)
         list[l] = sorted[l];
